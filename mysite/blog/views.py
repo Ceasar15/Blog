@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 
 from .models import Post
+from .forms import EmailPostForm
 # Create your views here.
 
 
@@ -13,7 +14,6 @@ class PostListView(ListView):
     queryset = Post.published.all()
     context_object_name = 'posts'
     paginate_by = 1
-
 
 # Function based Post list View
 # def post_list(request):
@@ -31,6 +31,25 @@ class PostListView(ListView):
 #         'posts': posts,
 #     }
 #     return render(request, 'blog/post/list.html', context)
+
+
+# Share post with emails
+def post_share(request, post_id):
+    post = get_object_or_404(Post, id=post_id, status='published')
+    if request.method == 'POST':
+        # Form was submitted
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            # Form fields passed validation
+            cd = form.cleaned_data
+            # send email
+    else:
+        form = EmailPostForm()
+    context = {
+        'post':post,
+        'form': form,
+    }
+    return render(request, 'blog/post/share.html', context)
 
 
 # Post Detail View
