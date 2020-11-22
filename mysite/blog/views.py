@@ -4,21 +4,24 @@ from .models import Post
 
 # Create your views here.
 
+# Post list View
 def post_list(request):
-    post = Post.published.all()
+    posts = Post.published.all()
     context = {
-        'post': post,
+        'posts': posts,
     }
-    return (render, 'post/list.html', context)
+    return render(request, 'blog/post/list.html', context)
 
+
+# Post Detail View
 def post_detail(request, year, day, month, post):
     post = get_object_or_404(Post, slug=post, 
                                     status='published',
                                    publish__year = year,
                                     publish__month=month,
                                     publish__day =day)
-    template = 'blog/detail.html'
+    template = 'blog/post/detail.html'
     context = {
         'post':post,
     }
-    return (render, template, context)
+    return render(request, template, context)

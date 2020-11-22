@@ -3,6 +3,7 @@ from django.contrib.admin.filters import ListFilter
 from .models import Post
 # Register your models here.
 
+# Customize the Admin Panel
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'author', 'publish', 'status')
