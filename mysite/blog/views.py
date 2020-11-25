@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
 
+
 from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm
 
