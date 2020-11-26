@@ -1,14 +1,17 @@
+from django.db.models import query
 from django.http import request
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.postgres.search import SearchVector
 from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
 
 
+
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 
 
 
@@ -112,3 +115,19 @@ def post_detail(request, year, day, month, post):
     }
     return render(request, template, context)
 
+# Search View
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Post.published.annotate(search=SearchVector('title','body'),).filter(search=query)
+    context = {
+        'form':form,
+        'query': query,
+        'results': results,
+    }
+    return render(request, 'blog/post/search.html', context)
